@@ -21,7 +21,7 @@ RELEASE_FILE=	${WRKDIR}/${RELEASE_ASSET}
 
 USES=		xorg tar:tgz shebangfix python:3.0+
 USE_XORG=    x11 xkbfile
-BUILD_DEPENDS=	npm-node22>0:www/npm-node22 rsync>0:net/rsync quilt>0:devel/quilt python3>0:lang/python3 jq:textproc/jq
+BUILD_DEPENDS=	npm-node22>0:www/npm-node22 rsync>0:net/rsync quilt>0:devel/quilt python3>0:lang/python3 jq:textproc/jq gh>0:devel/gh
 
 post-patch:
 	cd ${WRKSRC} && quilt push -a
