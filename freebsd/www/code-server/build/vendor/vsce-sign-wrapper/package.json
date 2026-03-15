@@ -1,0 +1,9 @@
+{
+  "name": "@vscode/vsce-sign",
+  "version": "2.0.7",
+  "private": true,
+  "main": "index.js",
+  "bin": {
+    "vsce-sign": "bin/vsce-sign"
+  }
+}

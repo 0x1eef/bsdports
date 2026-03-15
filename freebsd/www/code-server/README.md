@@ -51,7 +51,7 @@ See `coder/code-server` repo for docs: https://github.com/coder/code-server
 
 The [build/](build/) subdirectory has its own Makefile. It will produce
 a tarball that includes a full code-server release. This is expected to
-be done by a maintainer, and the tarball uploaded as a GitHub reelease.
+be done by a maintainer, and the tarball uploaded as a GitHub release.
 
 The port Makefile in the parent directory then downloads and
 extracts the contents of the earlier build. This process avoids trying
@@ -64,6 +64,23 @@ The build process:
     $ make clean build
     $ ls work/code-server-X.X.X.tgz
 
+During the build we replace Microsoft's `@vscode/vsce-sign` package with
+the open `node-ovsx-sign` package. This keeps extension signature checks
+working on FreeBSD without pulling in a large lockfile rewrite.
+
+If package dependencies need local changes, keep them as small as
+possible. Prefer `package.json` changes first. Only carry lockfile
+changes that are strictly needed for a reproducible `npm ci`.
+
+To replace the tarball asset on the existing GitHub release tag:
+
+    $ cd build/
+    $ make upload-release-asset
+
+This uses `gh release upload --clobber` against the existing
+`${PORTNAME}` release tag in `0x1eef/myports` by default. Override
+`RELEASE_REPO` or `RELEASE_TAG` on the command line if needed.
+
 ## Patches
 
 This port applies a patch that fixes terminal support on FreeBSD,
@@ -72,4 +89,3 @@ in mongodb-js/kerberos. See https://github.com/mongodb-js/kerberos/commit/d3e1a7
 At the time of writing the commit is not on NPM and it has been pulled in
 via GitHub. The port also takes care of setting up ripgrep for fuzzy file
 search support.
-

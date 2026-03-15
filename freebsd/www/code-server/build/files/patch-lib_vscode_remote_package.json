@@ -1,11 +1,11 @@
 --- lib/vscode/remote/package.json.orig	2025-11-27 20:00:13 UTC
 +++ lib/vscode/remote/package.json
-@@ -30,7 +30,7 @@
-     "https-proxy-agent": "^7.0.2",
-     "jschardet": "3.1.4",
+@@ -34,7 +34,7 @@
      "katex": "^0.16.22",
--    "kerberos": "2.1.1",
-+    "kerberos": "github:mongodb-js/kerberos",
+     "kerberos": "2.1.1",
      "minimist": "^1.2.8",
-     "native-watchdog": "^1.4.1",
-     "node-pty": "1.1.0-beta35",
+-    "node-pty": "^1.2.0-beta.10",
++    "node-pty": "^1.1.0-beta43",
+     "tas-client": "0.3.1",
+     "vscode-oniguruma": "1.7.0",
+     "vscode-regexpp": "^3.1.0",

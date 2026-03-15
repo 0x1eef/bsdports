@@ -1,0 +1,10 @@
+{
+  "name": "node-ovsx-sign-vendor",
+  "private": true,
+  "dependencies": {
+    "node-ovsx-sign": "1.2.0"
+  },
+  "overrides": {
+    "@vscode/vsce-sign": "file:../vsce-sign-wrapper"
+  }
+}
