@@ -1,10 +1,10 @@
 PORTNAME=	code-server
-DISTVERSION=	4.108.2
+DISTVERSION=	4.111.0
 CATEGORIES=	devel
 MASTER_SITES= https://github.com/microsoft/vscode/archive/refs/tags/:vscode
 DISTFILES= ${_VSCODE_VERSION}.tar.gz:vscode
 DIST_SUBDIR=	code-server
-_VSCODE_VERSION=1.108.2
+_VSCODE_VERSION=1.111.0
 
 BATCH=	1
 MAINTAINER=	0x1eef@hardenedbsd.org
@@ -14,6 +14,10 @@ USE_GITHUB=	yes
 GH_ACCOUNT=	coder
 GH_PROJECT=	code-server
 GH_TAGNAME=	v${DISTVERSION}
+RELEASE_REPO?=	0x1eef/myports
+RELEASE_TAG?=	${PORTNAME}
+RELEASE_ASSET=	code-server-${DISTVERSION}.tgz
+RELEASE_FILE=	${WRKDIR}/${RELEASE_ASSET}
 
 USES=		xorg tar:tgz shebangfix python:3.0+
 USE_XORG=    x11 xkbfile
@@ -29,14 +33,36 @@ post-extract:
 
 do-build:
 	cd ${WRKSRC} && \
+	  ${MKDIR} ${WRKSRC}/vendor && \
+	  (cd ${.CURDIR}/vendor/node-ovsx-sign && npm ci --ignore-scripts --no-audit --no-fund) && \
+	  rsync -a --delete ${.CURDIR}/vendor/vsce-sign-wrapper/ ${WRKSRC}/vendor/vsce-sign-wrapper/ && \
+	  ${MKDIR} ${WRKSRC}/vendor/vsce-sign-wrapper/node_modules && \
+	  rsync -a --delete ${.CURDIR}/vendor/node-ovsx-sign/node_modules/ ${WRKSRC}/vendor/vsce-sign-wrapper/node_modules/ && \
 	  ELECTRON_SKIP_BINARY_DOWNLOAD=1 npm ci && \
+	  ${MKDIR} ${WRKSRC}/lib/vscode/node_modules/@vscode && \
+	  rsync -a --delete ${.CURDIR}/vendor/vsce-sign-wrapper/ ${WRKSRC}/lib/vscode/node_modules/@vscode/vsce-sign/ && \
+	  ${MKDIR} ${WRKSRC}/lib/vscode/node_modules/@vscode/vsce-sign/node_modules && \
+	  rsync -a --delete ${.CURDIR}/vendor/node-ovsx-sign/node_modules/ ${WRKSRC}/lib/vscode/node_modules/@vscode/vsce-sign/node_modules/ && \
 	  npm run build && \
 	  cd lib/vscode && ELECTRON_SKIP_BINARY_DOWNLOAD=1 npm ci && \
 	  cd ../.. && VERSION=${DISTVERSION} npm run build:vscode && \
 	  KEEP_MODULES=1 npm run release
 	find ${WRKSRC} -type f -name '*.pyc' -delete
 	cd ${WRKDIR} && \
-	  tar -czf code-server-${DISTVERSION}.tgz ${PORTNAME}-${DISTVERSION}/release
-	@${ECHO_MSG} "${WRKDIR}/code-server-${DISTVERSION}.tgz"
+	  tar -czf ${RELEASE_ASSET} ${PORTNAME}-${DISTVERSION}/release
+	@${ECHO_MSG} "${RELEASE_FILE}"
+
+upload-release-asset:
+	@if [ ! -f "${RELEASE_FILE}" ]; then \
+		${ECHO_MSG} "Missing ${RELEASE_FILE}. Run 'make clean build' first."; \
+		exit 1; \
+	fi
+	@if ! command -v gh >/dev/null 2>&1; then \
+		${ECHO_MSG} "'gh' is required for upload-release-asset."; \
+		exit 1; \
+	fi
+	gh release upload "${RELEASE_TAG}" "${RELEASE_FILE}" \
+		--repo "${RELEASE_REPO}" \
+		--clobber
 
 .include <bsd.port.mk>

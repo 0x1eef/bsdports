@@ -1,11 +1,11 @@
---- lib/vscode/build/package.json.orig	2025-11-27 21:15:22 UTC
+--- lib/vscode/build/package.json.orig
 +++ lib/vscode/build/package.json
-@@ -79,6 +79,7 @@
+@@ -78,6 +78,7 @@
    "overrides": {
      "path-scurry": {
        "lru-cache": "11.2.1"
 -    }
 +    },
-+    "@vscode/vsce-sign": "npm:node-ovsx-sign@^1.2.0"
++    "@vscode/vsce-sign": "file:../../../vendor/vsce-sign-wrapper"
    }
  }

@@ -1,28 +1,11 @@
 --- lib/vscode/package.json.orig	2026-02-03 05:36:22 UTC
 +++ lib/vscode/package.json
-@@ -103,11 +103,12 @@
-     "https-proxy-agent": "^7.0.2",
-     "jschardet": "3.1.4",
-     "katex": "^0.16.22",
--    "kerberos": "2.1.1",
-+    "kerberos": "github:mongodb-js/kerberos",
+@@ -109,7 +109,7 @@
      "minimist": "^1.2.8",
-     "native-is-elevated": "0.8.0",
+     "native-is-elevated": "0.9.0",
      "native-keymap": "^3.3.5",
-     "native-watchdog": "^1.4.1",
-+    "node-ovsx-sign": "^1.2.0",
-     "node-pty": "^1.1.0-beta43",
+-    "node-pty": "^1.2.0-beta.10",
++    "node-pty": "^1.1.0-beta43",
      "open": "^10.1.2",
+     "playwright-core": "1.59.0-alpha-2026-02-20",
      "tas-client": "0.3.1",
-@@ -225,9 +226,8 @@
-   },
-   "overrides": {
-     "node-gyp-build": "4.8.1",
--    "kerberos@2.1.1": {
--      "node-addon-api": "7.1.0"
--    }
-+    "@vscode/vsce-sign": "npm:node-ovsx-sign@^1.2.0",
-+    "kerberos@2.1.1": { "node-addon-api": "7.1.0" }
-   },
-   "repository": {
-     "type": "git",
