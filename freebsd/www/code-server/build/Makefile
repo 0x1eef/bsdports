@@ -1,10 +1,10 @@
 PORTNAME=	code-server
-DISTVERSION=	4.111.0
+DISTVERSION=	4.118.0
 CATEGORIES=	devel
 MASTER_SITES= https://github.com/microsoft/vscode/archive/refs/tags/:vscode
 DISTFILES= ${_VSCODE_VERSION}.tar.gz:vscode
 DIST_SUBDIR=	code-server
-_VSCODE_VERSION=1.111.0
+_VSCODE_VERSION=1.118.0
 
 BATCH=	1
 MAINTAINER=	0x1eef@hardenedbsd.org
@@ -45,6 +45,10 @@ do-build:
 	  rsync -a --delete ${.CURDIR}/vendor/node-ovsx-sign/node_modules/ ${WRKSRC}/lib/vscode/node_modules/@vscode/vsce-sign/node_modules/ && \
 	  npm run build && \
 	  cd lib/vscode && ELECTRON_SKIP_BINARY_DOWNLOAD=1 npm ci && \
+	  ${MKDIR} ${WRKSRC}/lib/vscode/node_modules/@vscode/ripgrep/bin && \
+	  ${LN} -sf ${LOCALBASE}/bin/rg ${WRKSRC}/lib/vscode/node_modules/@vscode/ripgrep/bin/rg && \
+	  ${MKDIR} ${WRKSRC}/lib/vscode/remote/node_modules/@vscode/ripgrep/bin && \
+	  ${LN} -sf ${LOCALBASE}/bin/rg ${WRKSRC}/lib/vscode/remote/node_modules/@vscode/ripgrep/bin/rg && \
 	  cd ../.. && VERSION=${DISTVERSION} npm run build:vscode && \
 	  KEEP_MODULES=1 npm run release
 	find ${WRKSRC} -type f -name '*.pyc' -delete

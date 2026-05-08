@@ -1,11 +1,11 @@
---- lib/vscode/package.json.orig	2026-02-03 05:36:22 UTC
+--- lib/vscode/package.json.orig
 +++ lib/vscode/package.json
-@@ -109,7 +109,7 @@
+@@ -137,7 +137,7 @@
      "minimist": "^1.2.8",
      "native-is-elevated": "0.9.0",
      "native-keymap": "^3.3.5",
--    "node-pty": "^1.2.0-beta.10",
+-    "node-pty": "^1.2.0-beta.12",
 +    "node-pty": "^1.1.0-beta43",
      "open": "^10.1.2",
-     "playwright-core": "1.59.0-alpha-2026-02-20",
-     "tas-client": "0.3.1",
+     "playwright-core": "1.59.1",
+     "ssh2": "^1.16.0",

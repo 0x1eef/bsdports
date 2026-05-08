@@ -1,5 +1,5 @@
-TIMESTAMP = 1773533956
-SHA256 (code-server/1.111.0.tar.gz) = 591246c3f17b81d2062e89fd757ce92be6910ed02b0adb8de74d12d1e655a0f3
-SIZE (code-server/1.111.0.tar.gz) = 26122986
-SHA256 (code-server/coder-code-server-4.111.0-v4.111.0_GH0.tar.gz) = cd3756b35419bf900910ca3fd69c0042529dc28cedde8af85e243c1f6b1d4862
-SIZE (code-server/coder-code-server-4.111.0-v4.111.0_GH0.tar.gz) = 777295
+TIMESTAMP = 1778265196
+SHA256 (code-server/1.118.0.tar.gz) = a7ebd8f47047b309e2823951799295bda418e0b784146e72998652706612c4fc
+SIZE (code-server/1.118.0.tar.gz) = 40747975
+SHA256 (code-server/coder-code-server-4.118.0-v4.118.0_GH0.tar.gz) = 9a1ec149d3e5519b5fb37ae822aadeef96e2138580a784423fa75f636ca5aa12
+SIZE (code-server/coder-code-server-4.118.0-v4.118.0_GH0.tar.gz) = 776634
