@@ -10,29 +10,28 @@
  const ansiRegex = /[\u001b\u009b][[()#;?]*(?:[0-9]{1,4}(?:;[0-9]{0,4})*)?[0-9A-ORZcf-nqry=><]/g;
  const timestampRegex = /^\[\d{2}:\d{2}:\d{2}\]\s*/;
  
-@@ -26,13 +27,13 @@
+@@ -24,15 +25,22 @@
  		}
  	}
  
--	const args = ['tsgo', '--project', projectPath, '--pretty', 'false'];
-+	const args = [...baseArgs, '--project', projectPath, '--pretty', 'false'];
+-	const args = ['tsgo', '--project', projectPath, '--pretty', 'false', '--incremental'];
++	const args = [...baseArgs, '--project', projectPath, '--pretty', 'false', '--incremental'];
  	if (config.noEmit) {
  		args.push('--noEmit');
  	} else {
  		args.push('--sourceMap', '--inlineSources');
  	}
 -	const child = cp.spawn(npx, args, {
++	const env = { ...process.env };
++	if (process.platform === 'freebsd') {
++		env['NODE_OPTIONS'] = env['NODE_OPTIONS']
++			? `${env['NODE_OPTIONS']} --max-old-space-size=8192`
++			: '--max-old-space-size=8192';
++	}
 +	const child = cp.spawn(runner, args, {
  		cwd: root,
  		stdio: ['ignore', 'pipe', 'pipe'],
++		env,
  		shell: true
-@@ -63,6 +64,9 @@
- 			if (code === 0) {
- 				Promise.resolve(onComplete?.()).then(() => resolve(), reject);
- 			} else {
-+				for (const line of lines) {
-+					fancyLog(line);
-+				}
- 				reject(new Error(`tsgo exited with code ${code ?? 'unknown'}`));
- 			}
- 		});
+ 	});
+ 
