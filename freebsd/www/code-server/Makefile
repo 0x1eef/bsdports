@@ -11,18 +11,26 @@ COMMENT=	VS Code in the browser
 LICENSE=	MIT
 LICENSE_FILE=	${WRKSRC}/release/LICENSE
 
-LIB_DEPENDS= 	libinotify.so:devel/libinotify
-RUN_DEPENDS=	npm-node22>0:www/npm-node22 rg:textproc/ripgrep
+LIB_DEPENDS=	libinotify.so:devel/libinotify
+RUN_DEPENDS=	npm-node24>0:www/npm-node24 \
+		rg:textproc/ripgrep
 
 NO_BUILD=	yes
 
-USES= 		tar:tgz shebangfix python:3.0+
-SHEBANG_FILES= ${WRKSRC}/release/lib/vscode/node_modules/jschardet/scripts/run-workflow.sh \
-        ${WRKSRC}/release/lib/vscode/node_modules/jschardet/scripts/show-size-changes.sh \
-        ${WRKSRC}/release/lib/vscode/out/vs/base/node/cpuUsage.sh
+USES=		tar:tgz shebangfix python:3.0+
+SHEBANG_FILES=	${WRKSRC}/release/lib/vscode/node_modules/jschardet/scripts/run-workflow.sh \
+		${WRKSRC}/release/lib/vscode/node_modules/jschardet/scripts/show-size-changes.sh \
+		${WRKSRC}/release/lib/vscode/out/vs/base/node/cpuUsage.sh
 
 post-patch:
-	@${REINPLACE_CMD} -i '' 's|process.platform|"linux"|g' ${WRKSRC}/release/lib/vscode/out/vs/platform/terminal/node/ptyHostMain.js
+	@${MV} ${WRKSRC}/release/out/node/entry.js ${WRKSRC}/release/out/node/entry.js.orig
+	@${PRINTF} '%s\n' 'if (process.platform === "freebsd") { Object.defineProperty(process, "platform", { value: "linux" }); }' > ${WRKSRC}/release/out/node/entry.js
+	@${CAT} ${WRKSRC}/release/out/node/entry.js.orig >> ${WRKSRC}/release/out/node/entry.js
+	@${RM} ${WRKSRC}/release/out/node/entry.js.orig
+	@${MV} ${WRKSRC}/release/lib/vscode/out/bootstrap-fork.js ${WRKSRC}/release/lib/vscode/out/bootstrap-fork.js.orig
+	@${PRINTF} '%s\n' 'if (process.platform === "freebsd") { Object.defineProperty(process, "platform", { value: "linux" }); }' > ${WRKSRC}/release/lib/vscode/out/bootstrap-fork.js
+	@${CAT} ${WRKSRC}/release/lib/vscode/out/bootstrap-fork.js.orig >> ${WRKSRC}/release/lib/vscode/out/bootstrap-fork.js
+	@${RM} ${WRKSRC}/release/lib/vscode/out/bootstrap-fork.js.orig
 
 do-install:
 	${MKDIR} ${STAGEDIR}${DATADIR}
