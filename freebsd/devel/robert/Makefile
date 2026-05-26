@@ -9,7 +9,7 @@ WWW=		https://llmrb.github.io/robert
 LICENSE=	BSD0CLAUSE
 
 LIB_DEPENDS=	libcurl.so:ftp/curl libmbedtls.so:security/mbedtls4
-BUILD_DEPENDS= devel/rubygem-rake
+BUILD_DEPENDS= ${LOCALBASE}/bin/rake:devel/rubygem-rake
 
 USES=		localbase ruby:build
 
