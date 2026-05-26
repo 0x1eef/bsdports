@@ -4,7 +4,8 @@ CATEGORIES=	www
 MASTER_SITES= https://github.com/0x1eef/myports/releases/download/${PORTNAME}/:codeserver
 DISTFILES=	code-server-${DISTVERSION}.tgz:codeserver
 DIST_SUBDIR=	${PORTNAME}
-PORTREVISION=1
+PORTREVISION=	2
+
 MAINTAINER=	0x1eef@hardenedbsd.org
 COMMENT=	VS Code in the browser
 
@@ -23,14 +24,13 @@ SHEBANG_FILES=	${WRKSRC}/release/lib/vscode/node_modules/jschardet/scripts/run-w
 		${WRKSRC}/release/lib/vscode/out/vs/base/node/cpuUsage.sh
 
 post-patch:
-	@${MV} ${WRKSRC}/release/out/node/entry.js ${WRKSRC}/release/out/node/entry.js.orig
-	@${PRINTF} '%s\n' 'if (process.platform === "freebsd") { Object.defineProperty(process, "platform", { value: "linux" }); }' > ${WRKSRC}/release/out/node/entry.js
-	@${CAT} ${WRKSRC}/release/out/node/entry.js.orig >> ${WRKSRC}/release/out/node/entry.js
-	@${RM} ${WRKSRC}/release/out/node/entry.js.orig
-	@${MV} ${WRKSRC}/release/lib/vscode/out/bootstrap-fork.js ${WRKSRC}/release/lib/vscode/out/bootstrap-fork.js.orig
-	@${PRINTF} '%s\n' 'if (process.platform === "freebsd") { Object.defineProperty(process, "platform", { value: "linux" }); }' > ${WRKSRC}/release/lib/vscode/out/bootstrap-fork.js
-	@${CAT} ${WRKSRC}/release/lib/vscode/out/bootstrap-fork.js.orig >> ${WRKSRC}/release/lib/vscode/out/bootstrap-fork.js
-	@${RM} ${WRKSRC}/release/lib/vscode/out/bootstrap-fork.js.orig
+	@${AWK} 'BEGIN { print "if (process.platform === \"freebsd\") { Object.defineProperty(process, \"platform\", { value: \"linux\" }); }" } { print }' \
+		${WRKSRC}/release/lib/vscode/out/bootstrap-fork.js > ${WRKSRC}/release/lib/vscode/out/bootstrap-fork.js.new
+	@${MV} ${WRKSRC}/release/lib/vscode/out/bootstrap-fork.js.new ${WRKSRC}/release/lib/vscode/out/bootstrap-fork.js
+	@${REINPLACE_CMD} -i '' 's/process.platform !== "linux"/process.platform !== "linux" \&\& process.platform !== "freebsd"/' \
+		${WRKSRC}/release/lib/vscode/node_modules/@vscode/deviceid/dist/index.js
+	@${REINPLACE_CMD} -i '' 's/process.platform === "linux"/process.platform === "linux" || process.platform === "freebsd"/' \
+		${WRKSRC}/release/lib/vscode/node_modules/@vscode/deviceid/dist/storage.js
 
 do-install:
 	${MKDIR} ${STAGEDIR}${DATADIR}
