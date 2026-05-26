@@ -1,7 +1,6 @@
 PORTNAME=	robert
-DISTVERSION=	0.1.1
+DISTVERSION=	0.3.0
 CATEGORIES=	misc education deskutils sysutils
-PORTREVISION=1
 
 MAINTAINER=	0x1eef@hardenedbsd.org
 COMMENT=	Robert is designed to help you learn about FreeBSD
@@ -17,7 +16,7 @@ USES=		localbase ruby:build
 PLIST_FILES=	bin/robert \
 		share/man/man1/robert.1.gz
 
-ROBERT_COMMIT=		v0.1.1
+ROBERT_COMMIT=		v$(DISTVERSION)
 MRUBY_COMMIT=		94bd329afeb9f14d2de4c62aff1eddea6adec0ca
 MRUBY_LLM_COMMIT=	v0.1.0.beta.3
 MRUBY_TUI_COMMIT=	v0.3.0
