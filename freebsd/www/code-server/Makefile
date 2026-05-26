@@ -4,7 +4,7 @@ CATEGORIES=	www
 MASTER_SITES= https://github.com/0x1eef/myports/releases/download/${PORTNAME}/:codeserver
 DISTFILES=	code-server-${DISTVERSION}.tgz:codeserver
 DIST_SUBDIR=	${PORTNAME}
-PORTREVISION=	2
+PORTREVISION=	3
 
 MAINTAINER=	0x1eef@hardenedbsd.org
 COMMENT=	VS Code in the browser
@@ -24,13 +24,12 @@ SHEBANG_FILES=	${WRKSRC}/release/lib/vscode/node_modules/jschardet/scripts/run-w
 		${WRKSRC}/release/lib/vscode/out/vs/base/node/cpuUsage.sh
 
 post-patch:
-	@${AWK} 'BEGIN { print "if (process.platform === \"freebsd\") { Object.defineProperty(process, \"platform\", { value: \"linux\" }); }" } { print }' \
-		${WRKSRC}/release/lib/vscode/out/bootstrap-fork.js > ${WRKSRC}/release/lib/vscode/out/bootstrap-fork.js.new
-	@${MV} ${WRKSRC}/release/lib/vscode/out/bootstrap-fork.js.new ${WRKSRC}/release/lib/vscode/out/bootstrap-fork.js
 	@${REINPLACE_CMD} -i '' 's/process.platform !== "linux"/process.platform !== "linux" \&\& process.platform !== "freebsd"/' \
 		${WRKSRC}/release/lib/vscode/node_modules/@vscode/deviceid/dist/index.js
 	@${REINPLACE_CMD} -i '' 's/process.platform === "linux"/process.platform === "linux" || process.platform === "freebsd"/' \
 		${WRKSRC}/release/lib/vscode/node_modules/@vscode/deviceid/dist/storage.js
+	@${REINPLACE_CMD} -i '' 's/case"linux":/case"linux":case"freebsd":/' \
+		${WRKSRC}/release/lib/vscode/out/vs/platform/terminal/node/ptyHostMain.js
 
 do-install:
 	${MKDIR} ${STAGEDIR}${DATADIR}
