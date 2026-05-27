@@ -8,14 +8,14 @@ WWW=		https://llmrb.github.io/robert
 
 LICENSE=	BSD0CLAUSE
 
-LIB_DEPENDS=	libcurl.so:ftp/curl libmbedtls.so:security/mbedtls4
+LIB_DEPENDS=	libcurl.so:ftp/curl libmbedtls.so:security/mbedtls3
 BUILD_DEPENDS= ${LOCALBASE}/bin/rake:devel/rubygem-rake
 
 USES=		localbase ruby:build
 
-ROBERT_COMMIT=		5508ddae82c75e9705216703d299b7a90309cca6
+ROBERT_COMMIT=		v0.1.0.beta
 MRUBY_COMMIT=		b1adab4e87659dc880d8bcc60a1134ace14124c1
-MRUBY_LLM_COMMIT=	8cd54a0e0a5e902eeefd93fddcb3ac38f14c8f7d
+MRUBY_LLM_COMMIT=	v0.1.0.beta
 MRUBY_TUI_COMMIT=	1a422a62408430d1bb8d71f5dfe2264b5223fd04
 MRUBY_TUI_CHAT_COMMIT=	4e42aa0da1b2a95a7e8e875409e3144f9c90b53a
 MRUBY_MARKDOWN_COMMIT=	56ba9c05679a15dd2d888776e1c47ee35ed8cfbd
