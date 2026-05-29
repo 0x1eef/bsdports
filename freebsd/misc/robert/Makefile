@@ -1,6 +1,6 @@
 PORTNAME=	robert
 DISTVERSION=	0.1.1
-CATEGORIES=	education deskutils
+CATEGORIES=	misc education deskutils sysutils
 
 MAINTAINER=	0x1eef@hardenedbsd.org
 COMMENT=	Robert is designed to help you learn about FreeBSD
