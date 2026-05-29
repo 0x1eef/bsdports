@@ -1,5 +1,5 @@
 PORTNAME=	robert
-DISTVERSION=	0.1.0
+DISTVERSION=	0.1.1
 CATEGORIES=	education deskutils
 
 MAINTAINER=	0x1eef@hardenedbsd.org
@@ -13,8 +13,8 @@ BUILD_DEPENDS= ${LOCALBASE}/bin/rake:devel/rubygem-rake
 
 USES=		localbase ruby:build
 
-ROBERT_COMMIT=		v0.1.0
-MRUBY_COMMIT=		v4.0.0
+ROBERT_COMMIT=		v0.1.1
+MRUBY_COMMIT=		94bd329afeb9f14d2de4c62aff1eddea6adec0ca
 MRUBY_LLM_COMMIT=	v0.1.0.beta.3
 MRUBY_TUI_COMMIT=	v0.3.0
 MRUBY_TUI_CHAT_COMMIT=	4e42aa0da1b2a95a7e8e875409e3144f9c90b53a
@@ -65,6 +65,6 @@ do-build:
 	cd ${WRKSRC} && ${SETENV} ${MAKE_ENV} MRUBY_DIR=${WRKSRC_mruby} BUILD=production ${MAKE_CMD}
 
 do-install:
-	${INSTALL_PROGRAM} ${WRKSRC}/bin/${PORTNAME} ${STAGEDIR}${PREFIX}/bin/${PORTNAME}
+	cd ${WRKSRC} && ${SETENV} ${MAKE_ENV} MRUBY_DIR=${WRKSRC_mruby} BUILD=production ${MAKE_CMD} install DESTDIR=${STAGEDIR}
 
 .include <bsd.port.mk>
