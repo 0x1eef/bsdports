@@ -8,10 +8,13 @@ WWW=		https://llmrb.github.io/robert
 
 LICENSE=	BSD0CLAUSE
 
-LIB_DEPENDS=	libcurl.so:ftp/curl libmbedtls.so:security/mbedtls3
-BUILD_DEPENDS= ${LOCALBASE}/bin/rake:devel/rubygem-rake
+LIB_DEPENDS=	libcurl.so:ftp/curl \
+		libmbedtls.so:security/mbedtls3
+BUILD_DEPENDS=	${LOCALBASE}/bin/rake:devel/rubygem-rake
 
 USES=		localbase ruby:build
+PLIST_FILES=	bin/robert \
+		share/man/man1/robert.1.gz
 
 ROBERT_COMMIT=		v0.1.1
 MRUBY_COMMIT=		94bd329afeb9f14d2de4c62aff1eddea6adec0ca

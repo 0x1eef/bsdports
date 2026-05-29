@@ -1,2 +1,3 @@
-Robert is designed to help you learn about FreeBSD through its official documentation.
-He can search and read man pages, and read files (but only with your permission).
+Robert is designed to help you learn about FreeBSD through its official
+documentation. He can search and read man pages, and read files after
+asking for permission.
