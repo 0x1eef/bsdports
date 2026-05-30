@@ -13,8 +13,7 @@ LIB_DEPENDS=	libcurl.so:ftp/curl \
 BUILD_DEPENDS=	${LOCALBASE}/bin/rake:devel/rubygem-rake
 
 USES=		localbase ruby:build
-PLIST_FILES=	bin/robert
-MAN1=	robert.1
+PLIST_FILES=	bin/robert man/man1/robert.1
 
 ROBERT_COMMIT=		v${DISTVERSION}
 MRUBY_COMMIT=		94bd329afeb9f14d2de4c62aff1eddea6adec0ca
