@@ -156,17 +156,6 @@
  	}
 --- lib/vscode/src/vs/workbench/contrib/extensions/browser/extensionsWorkbenchService.ts.orig
 +++ lib/vscode/src/vs/workbench/contrib/extensions/browser/extensionsWorkbenchService.ts
-@@ -340,6 +340,10 @@
- 			}
- 			// Do not allow updating system extensions in stable
- 			if (this.type === ExtensionType.System && this.productService.quality === 'stable' && !this.productService.builtInExtensionsEnabledWithAutoUpdates?.some(id => id.toLowerCase() === this.identifier.id.toLowerCase())) {
-+				return false;
-+			}
-+			// Do not update builtin extensions.
-+			if (this.type !== ExtensionType.User) {
- 				return false;
- 			}
- 			if (!this.local.preRelease && this.gallery.properties.isPreReleaseVersion) {
 @@ -2758,7 +2762,8 @@
  		}
  
