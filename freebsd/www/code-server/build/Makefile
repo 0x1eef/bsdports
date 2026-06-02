@@ -18,6 +18,8 @@ RELEASE_REPO?=	0x1eef/myports
 RELEASE_TAG?=	${PORTNAME}
 RELEASE_ASSET=	code-server-${DISTVERSION}.tgz
 RELEASE_FILE=	${WRKDIR}/${RELEASE_ASSET}
+NODE22?=	${LOCALBASE}/bin/node
+NPM_CLI=	${LOCALBASE}/lib/node_modules/npm/bin/npm-cli.js
 
 USES=		xorg tar:tgz shebangfix python:3.0+
 USE_XORG=    x11 xkbfile
@@ -50,24 +52,29 @@ post-extract:
 
 do-build:
 	cd ${WRKSRC} && \
+	  ${NODE22} -e 'if (!process.version.startsWith("v22.")) { throw new Error(`expected Node 22, got ${process.version}`); }' && \
 	  ${MKDIR} ${WRKSRC}/vendor && \
-	  (cd ${.CURDIR}/vendor/node-ovsx-sign && npm ci --ignore-scripts --no-audit --no-fund) && \
+	  (cd ${.CURDIR}/vendor/node-ovsx-sign && ${NODE22} ${NPM_CLI} ci --ignore-scripts --no-audit --no-fund) && \
 	  rsync -a --delete ${.CURDIR}/vendor/vsce-sign-wrapper/ ${WRKSRC}/vendor/vsce-sign-wrapper/ && \
 	  ${MKDIR} ${WRKSRC}/vendor/vsce-sign-wrapper/node_modules && \
 	  rsync -a --delete ${.CURDIR}/vendor/node-ovsx-sign/node_modules/ ${WRKSRC}/vendor/vsce-sign-wrapper/node_modules/ && \
-	  ELECTRON_SKIP_BINARY_DOWNLOAD=1 npm ci && \
+	  ELECTRON_SKIP_BINARY_DOWNLOAD=1 ${NODE22} ${NPM_CLI} ci && \
 	  ${MKDIR} ${WRKSRC}/lib/vscode/node_modules/@vscode && \
 	  rsync -a --delete ${.CURDIR}/vendor/vsce-sign-wrapper/ ${WRKSRC}/lib/vscode/node_modules/@vscode/vsce-sign/ && \
 	  ${MKDIR} ${WRKSRC}/lib/vscode/node_modules/@vscode/vsce-sign/node_modules && \
 	  rsync -a --delete ${.CURDIR}/vendor/node-ovsx-sign/node_modules/ ${WRKSRC}/lib/vscode/node_modules/@vscode/vsce-sign/node_modules/ && \
-	  npm run build && \
-	  cd lib/vscode && ELECTRON_SKIP_BINARY_DOWNLOAD=1 npm ci && \
+	  ${NODE22} ${NPM_CLI} run build && \
+	  cd lib/vscode && ELECTRON_SKIP_BINARY_DOWNLOAD=1 ${NODE22} ${NPM_CLI} ci && \
 	  ${MKDIR} ${WRKSRC}/lib/vscode/node_modules/@vscode/ripgrep/bin && \
 	  ${CP} ${LOCALBASE}/bin/rg ${WRKSRC}/lib/vscode/node_modules/@vscode/ripgrep/bin/rg && \
 	  ${MKDIR} ${WRKSRC}/lib/vscode/remote/node_modules/@vscode/ripgrep/bin && \
 	  ${CP} ${LOCALBASE}/bin/rg ${WRKSRC}/lib/vscode/remote/node_modules/@vscode/ripgrep/bin/rg && \
-	  cd ../.. && VERSION=${DISTVERSION} npm run build:vscode && \
-	  KEEP_MODULES=1 npm run release
+	  node_version=$$(sed -n 's/^target "\(.*\)"$$/\1/p' ${WRKSRC}/lib/vscode/remote/.yarnrc) && \
+	  ${MKDIR} ${WRKSRC}/lib/vscode/.build/node/v$${node_version}/linux-x64 && \
+	  ${CP} ${NODE22} ${WRKSRC}/lib/vscode/.build/node/v$${node_version}/linux-x64/node && \
+	  cd ../.. && VERSION=${DISTVERSION} ${NODE22} ${NPM_CLI} run build:vscode && \
+	  KEEP_MODULES=1 ${NODE22} ${NPM_CLI} run release && \
+	  ${CP} ${NODE22} ${WRKSRC}/release/lib/node
 	find ${WRKSRC} -type f -name '*.pyc' -delete
 	cd ${WRKDIR} && \
 	  tar -czf ${RELEASE_ASSET} ${PORTNAME}-${DISTVERSION}/release

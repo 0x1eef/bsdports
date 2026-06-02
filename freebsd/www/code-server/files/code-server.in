@@ -58,7 +58,7 @@ export EXTENSIONS_GALLERY="{\"serviceUrl\": \"${code_server_service_url}\",\"ite
 export XDG_DATA_HOME="${home_dir}/.local/share"
 export XDG_CONFIG_HOME="${home_dir}/.config"
 
-procname="node"
+procname="${PREFIX:-/usr/local}/share/code-server/lib/node"
 pidfile="/var/run/code-server.pid"
 start_precmd="${name}_prestart"
 start_cmd="code_server_start"

@@ -16,8 +16,9 @@ code-server itself.
 make clean build
 ```
 
-The build port uses `npm-node22`. The installed parent port depends on
-`npm-node24`.
+The build port uses `npm-node22` and bundles that Node binary into the
+release tarball. The installed parent port runs code-server through the
+bundled Node and does not depend on the global `node` package.
 
 ## Upload
 
