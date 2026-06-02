@@ -4,7 +4,7 @@ CATEGORIES=	www
 MASTER_SITES= https://github.com/0x1eef/myports/releases/download/${PORTNAME}/:codeserver
 DISTFILES=	code-server-${DISTVERSION}.tgz:codeserver
 DIST_SUBDIR=	${PORTNAME}
-PORTREVISION=	15
+PORTREVISION=	16
 
 MAINTAINER=	0x1eef@hardenedbsd.org
 COMMENT=	VS Code in the browser
@@ -16,6 +16,8 @@ LIB_DEPENDS=	libinotify.so:devel/libinotify
 RUN_DEPENDS=	rg:textproc/ripgrep
 
 NO_BUILD=	yes
+
+MPROTECT_DISABLE=	${DATADIR}/lib/node
 
 USES=		tar:tgz shebangfix python:3.0+
 SHEBANG_FILES=	${WRKSRC}/release/lib/vscode/node_modules/jschardet/scripts/run-workflow.sh \
