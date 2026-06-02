@@ -25,6 +25,14 @@ BUILD_DEPENDS=	npm-node22>0:www/npm-node22 rsync>0:net/rsync quilt>0:devel/quilt
 
 post-patch:
 	cd ${WRKSRC} && quilt push -a
+	${RM} -rf ${WRKSRC}/lib/vscode/extensions/copilot
+	cd ${WRKSRC}/lib/vscode && \
+	  jq 'del(.dependencies["@github/copilot"], .dependencies["@github/copilot-sdk"])' package.json > package.json.tmp && \
+	  ${MV} package.json.tmp package.json && \
+	  jq 'del(.packages[""].dependencies["@github/copilot"], .packages[""].dependencies["@github/copilot-sdk"], .dependencies["@github/copilot"], .dependencies["@github/copilot-sdk"]) | .packages |= with_entries(select(.key | test("^node_modules/@github/copilot") | not))' package-lock.json > package-lock.json.tmp && \
+	  ${MV} package-lock.json.tmp package-lock.json && \
+	  jq 'del(.defaultChatAgent) | .trustedExtensionAuthAccess = ((.trustedExtensionAuthAccess // []) | map(select(. != "github.copilot" and . != "github.copilot-chat"))) | .builtInExtensionsEnabledWithAutoUpdates = ((.builtInExtensionsEnabledWithAutoUpdates // []) | map(select(. != "GitHub.copilot" and . != "GitHub.copilot-chat")))' product.json > product.json.tmp && \
+	  ${MV} product.json.tmp product.json
 
 post-extract:
 	@${MKDIR} ${WRKSRC}/lib/vscode
