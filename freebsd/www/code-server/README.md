@@ -3,10 +3,11 @@
 [code-server](https://github.com/coder/code-server) can run VS Code
 in your browser, from anywhere. This project is a fork of
 [Rob4226/code-server-freebsd-port](https://github.com/Rob4226/code-server-freebsd-port)
-and it has been updated to use a recent version of code-server.
+and tracks the code-server version declared by the port.
 
 ## /etc/rc.conf variables
 
+- **code_server_enable** Defaults to "NO"
 - **code_server_user**  Defaults to "nobody"
 - **code_server_group** Defaults to "nobody"
 - **code_server_config_file** *(path)*: Set to /home/nobody/.code-server/config.yaml by default. Set to the full filepath of the config file.
@@ -19,7 +20,7 @@ and it has been updated to use a recent version of code-server.
 ## Usage
 
 > NOTE:
-> The file permissions one has when using vscode from a web browser is dependant
+> The file permissions one has when using VS Code from a web browser is dependent
 > on the user/group you choose to run this service. It defaults to `nobody` for
 > security reasons but you will probably want to specify a different user with
 > the appropriate permissions for your use case in `/etc/rc.conf`
@@ -33,11 +34,11 @@ $user@localhost /usr/local/bin/code-server
 Or run as a service via rc.d:
 
 ```sh
-service code_server enable  # Enable at start up
-service code_server start   # Start service
-service code_server stop    # Stop service
-service code_server restart # Restart service
-service code_server status  # Status of service
+service code-server enable  # Enable at start up
+service code-server start   # Start service
+service code-server stop    # Stop service
+service code-server restart # Restart service
+service code-server status  # Status of service
 ```
 
 ## Browser
@@ -49,16 +50,17 @@ See `coder/code-server` repo for docs: https://github.com/coder/code-server
 
 ## Maintainers
 
-The [build/](build/) subdirectory has its own Makefile. It will produce
-a tarball that includes a full code-server release. This is expected to
-be done by a maintainer, and the tarball uploaded as a GitHub release.
+The [build/](build/) subdirectory has its own Makefile and README. It
+produces a tarball that includes a full code-server release. This is
+expected to be done by a maintainer, and the tarball uploaded as a
+GitHub release.
 
 The port Makefile in the parent directory then downloads and
 extracts the contents of the earlier build. This process avoids trying
 to download assets outside the fetch phase - either during build or
 install.
 
-The build process:
+The maintainer build process:
 
     $ cd build/
     $ make clean build
@@ -67,6 +69,9 @@ The build process:
 During the build we replace Microsoft's `@vscode/vsce-sign` package with
 the open `node-ovsx-sign` package. This keeps extension signature checks
 working on FreeBSD without pulling in a large lockfile rewrite.
+
+The build removes GitHub Copilot and GitHub Copilot Chat, including their
+bundled extensions, package dependencies, product metadata, and plist entries.
 
 If package dependencies need local changes, keep them as small as
 possible. Prefer `package.json` changes first. Only carry lockfile
@@ -83,9 +88,7 @@ This uses `gh release upload --clobber` against the existing
 
 ## Patches
 
-This port applies a patch that fixes terminal support on FreeBSD,
-and another patch updates package.json to address a compile error
-in mongodb-js/kerberos. See https://github.com/mongodb-js/kerberos/commit/d3e1a717b5cbb8de01b44d2c083d8f6db317e738.
-At the time of writing the commit is not on NPM and it has been pulled in
-via GitHub. The port also takes care of setting up ripgrep for fuzzy file
-search support.
+The build port carries FreeBSD patches for VS Code, code-server, native
+dependencies, extension signing, ripgrep wiring, and runtime metadata.
+See [build/README.md](build/README.md) for maintainer notes about the
+current patch set.
