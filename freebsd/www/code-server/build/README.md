@@ -38,3 +38,24 @@ Chat from the shipped release.
 
 Keep package and lockfile changes narrow. Prefer targeted `package.json`
 changes and avoid broad upstream lockfile rewrites.
+
+## Why These Patches Exist
+
+This port carries a full VS Code server build because upstream code-server
+assumes Linux in several places. The local patches keep the FreeBSD package
+self-contained and predictable:
+
+- The build uses `npm-node22`, seeds VS Code's expected Node location, and
+  bundles that Node into the release so runtime behavior is not tied to the
+  system `node` package.
+- Native and platform patches make VS Code treat FreeBSD like a supported
+  server target where possible, including device identity, terminal behavior,
+  ripgrep, and extension signature checks.
+- File watcher patches force remote recursive watches onto polling on FreeBSD.
+  Parcel's native FreeBSD `brute-force` subscribe path can abort, which then
+  breaks the remote extension host and file search.
+- Search patches add bounded failures and clearer logs when the remote search
+  provider does not register or respond. They are diagnostics and guardrails,
+  not the root watcher fix.
+- Copilot is removed from the shipped build to avoid carrying large upstream
+  product metadata and dependency changes unrelated to the FreeBSD port.

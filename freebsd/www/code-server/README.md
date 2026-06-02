@@ -73,6 +73,22 @@ working on FreeBSD without pulling in a large lockfile rewrite.
 The build removes GitHub Copilot and GitHub Copilot Chat, including their
 bundled extensions, package dependencies, product metadata, and plist entries.
 
+The parent port installs the maintainer tarball without rebuilding
+code-server. It runs through the bundled Node binary at
+`%%DATADIR%%/lib/node` instead of depending on the system `node` package.
+This keeps code-server on the Node major version expected by the bundled
+VS Code sources even when other installed packages require a newer Node.
+
+On HardenedBSD, the port sets:
+
+```make
+MPROTECT_DISABLE=	${DATADIR}/lib/node
+```
+
+Node and native addons use executable memory patterns that can trip MPROTECT.
+The setting is scoped to the bundled runtime binary rather than disabling
+hardening for the service wrapper or the rest of the package.
+
 If package dependencies need local changes, keep them as small as
 possible. Prefer `package.json` changes first. Only carry lockfile
 changes that are strictly needed for a reproducible `npm ci`.
@@ -91,4 +107,4 @@ This uses `gh release upload --clobber` against the existing
 The build port carries FreeBSD patches for VS Code, code-server, native
 dependencies, extension signing, ripgrep wiring, and runtime metadata.
 See [build/README.md](build/README.md) for maintainer notes about the
-current patch set.
+current patch set and the rationale for the file watcher/search changes.
