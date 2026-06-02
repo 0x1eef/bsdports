@@ -21,7 +21,7 @@ RELEASE_FILE=	${WRKDIR}/${RELEASE_ASSET}
 
 USES=		xorg tar:tgz shebangfix python:3.0+
 USE_XORG=    x11 xkbfile
-BUILD_DEPENDS=	npm-node22>0:www/npm-node22 rsync>0:net/rsync quilt>0:devel/quilt python3>0:lang/python3 jq:textproc/jq gh>0:devel/gh
+BUILD_DEPENDS=	npm-node22>0:www/npm-node22 rsync>0:net/rsync quilt>0:devel/quilt python3>0:lang/python3 jq:textproc/jq gh>0:devel/gh ripgrep>0:textproc/ripgrep
 
 post-patch:
 	cd ${WRKSRC} && quilt push -a
@@ -36,9 +36,11 @@ post-patch:
 	cd ${WRKSRC}/lib/vscode && \
 	  jq 'del(.dependencies["@github/copilot"], .dependencies["@github/copilot-sdk"])' package.json > package.json.tmp && \
 	  ${MV} package.json.tmp package.json && \
+	  jq 'del(.scripts["watch-copilot"], .scripts["watch-copilotd"], .scripts["kill-watch-copilotd"], .scripts["copilot:setup"], .scripts["copilot:get_token"]) | .scripts.watch |= gsub(" ?watch-copilot"; "")' package.json > package.json.tmp && \
+	  ${MV} package.json.tmp package.json && \
 	  jq 'del(.packages[""].dependencies["@github/copilot"], .packages[""].dependencies["@github/copilot-sdk"], .dependencies["@github/copilot"], .dependencies["@github/copilot-sdk"]) | .packages |= with_entries(select(.key | test("^node_modules/@github/copilot") | not))' package-lock.json > package-lock.json.tmp && \
 	  ${MV} package-lock.json.tmp package-lock.json && \
-	  jq 'del(.defaultChatAgent) | .trustedExtensionAuthAccess = ((.trustedExtensionAuthAccess // []) | map(select(. != "github.copilot" and . != "github.copilot-chat"))) | .builtInExtensionsEnabledWithAutoUpdates = ((.builtInExtensionsEnabledWithAutoUpdates // []) | map(select(. != "GitHub.copilot" and . != "GitHub.copilot-chat")))' product.json > product.json.tmp && \
+	  jq 'del(.defaultChatAgent) | .trustedExtensionAuthAccess = ((.trustedExtensionAuthAccess // []) | map(select((. | tostring | test("copilot"; "i")) | not))) | .builtInExtensionsEnabledWithAutoUpdates = ((.builtInExtensionsEnabledWithAutoUpdates // []) | map(select(. != "GitHub.copilot" and . != "GitHub.copilot-chat")))' product.json > product.json.tmp && \
 	  ${MV} product.json.tmp product.json
 
 post-extract:
@@ -61,9 +63,9 @@ do-build:
 	  npm run build && \
 	  cd lib/vscode && ELECTRON_SKIP_BINARY_DOWNLOAD=1 npm ci && \
 	  ${MKDIR} ${WRKSRC}/lib/vscode/node_modules/@vscode/ripgrep/bin && \
-	  ${LN} -sf ${LOCALBASE}/bin/rg ${WRKSRC}/lib/vscode/node_modules/@vscode/ripgrep/bin/rg && \
+	  ${CP} ${LOCALBASE}/bin/rg ${WRKSRC}/lib/vscode/node_modules/@vscode/ripgrep/bin/rg && \
 	  ${MKDIR} ${WRKSRC}/lib/vscode/remote/node_modules/@vscode/ripgrep/bin && \
-	  ${LN} -sf ${LOCALBASE}/bin/rg ${WRKSRC}/lib/vscode/remote/node_modules/@vscode/ripgrep/bin/rg && \
+	  ${CP} ${LOCALBASE}/bin/rg ${WRKSRC}/lib/vscode/remote/node_modules/@vscode/ripgrep/bin/rg && \
 	  cd ../.. && VERSION=${DISTVERSION} npm run build:vscode && \
 	  KEEP_MODULES=1 npm run release
 	find ${WRKSRC} -type f -name '*.pyc' -delete
