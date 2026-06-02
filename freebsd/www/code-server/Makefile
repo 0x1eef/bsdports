@@ -4,7 +4,7 @@ CATEGORIES=	www
 MASTER_SITES= https://github.com/0x1eef/myports/releases/download/${PORTNAME}/:codeserver
 DISTFILES=	code-server-${DISTVERSION}.tgz:codeserver
 DIST_SUBDIR=	${PORTNAME}
-PORTREVISION=	12
+PORTREVISION=	13
 
 MAINTAINER=	0x1eef@hardenedbsd.org
 COMMENT=	VS Code in the browser

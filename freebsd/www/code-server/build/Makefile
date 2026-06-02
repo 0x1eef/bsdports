@@ -69,7 +69,7 @@ do-build:
 	  ${CP} ${LOCALBASE}/bin/rg ${WRKSRC}/lib/vscode/node_modules/@vscode/ripgrep/bin/rg && \
 	  ${MKDIR} ${WRKSRC}/lib/vscode/remote/node_modules/@vscode/ripgrep/bin && \
 	  ${CP} ${LOCALBASE}/bin/rg ${WRKSRC}/lib/vscode/remote/node_modules/@vscode/ripgrep/bin/rg && \
-	  node_version=$$(sed -n 's/^target "\(.*\)"$$/\1/p' ${WRKSRC}/lib/vscode/remote/.yarnrc) && \
+	  node_version=$$(sed -n 's/^target="\(.*\)"$$/\1/p' ${WRKSRC}/lib/vscode/remote/.npmrc) && \
 	  ${MKDIR} ${WRKSRC}/lib/vscode/.build/node/v$${node_version}/linux-x64 && \
 	  ${CP} ${NODE22} ${WRKSRC}/lib/vscode/.build/node/v$${node_version}/linux-x64/node && \
 	  cd ../.. && VERSION=${DISTVERSION} ${NODE22} ${NPM_CLI} run build:vscode && \
