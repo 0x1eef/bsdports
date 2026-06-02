@@ -30,8 +30,9 @@ post-patch:
 	  ! -name pendingEditContentStore.ts \
 	  ! -name fileEditTracker.ts \
 	  ! -name mapSessionEvents.ts \
+	  ! -name copilotToolDisplay.ts \
 	  -delete
-	${RM} -f ${WRKSRC}/lib/vscode/src/vs/platform/agentHost/test/node/copilotAgent.test.ts
+	${RM} -f ${WRKSRC}/lib/vscode/src/vs/platform/agentHost/test/node/copilot*.test.ts
 	cd ${WRKSRC}/lib/vscode && \
 	  jq 'del(.dependencies["@github/copilot"], .dependencies["@github/copilot-sdk"])' package.json > package.json.tmp && \
 	  ${MV} package.json.tmp package.json && \
