@@ -26,7 +26,12 @@ BUILD_DEPENDS=	npm-node22>0:www/npm-node22 rsync>0:net/rsync quilt>0:devel/quilt
 post-patch:
 	cd ${WRKSRC} && quilt push -a
 	${RM} -rf ${WRKSRC}/lib/vscode/extensions/copilot
-	${FIND} ${WRKSRC}/lib/vscode/src/vs/platform/agentHost/node/copilot -type f ! -name pendingEditContentStore.ts -delete
+	${FIND} ${WRKSRC}/lib/vscode/src/vs/platform/agentHost/node/copilot -type f \
+	  ! -name pendingEditContentStore.ts \
+	  ! -name fileEditTracker.ts \
+	  ! -name mapSessionEvents.ts \
+	  -delete
+	${RM} -f ${WRKSRC}/lib/vscode/src/vs/platform/agentHost/test/node/copilotAgent.test.ts
 	cd ${WRKSRC}/lib/vscode && \
 	  jq 'del(.dependencies["@github/copilot"], .dependencies["@github/copilot-sdk"])' package.json > package.json.tmp && \
 	  ${MV} package.json.tmp package.json && \
